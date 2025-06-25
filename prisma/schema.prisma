@@ -15,38 +15,34 @@ datasource db {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  username       String        @unique
-  passwordHash   String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  participants   Participant[]
-  messagesSent     Message[]        @relation("MessagesSent")
-  messagesReceived Message[]        @relation("MessagesReceived")
-
+  id               String          @id @default(uuid())
+  username         String          @unique
+  passwordHash     String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  participants     Participant[]
+  messagesSent     Message[]       @relation("MessagesSent")
   messageStatuses  MessageStatus[]
 }
 
+
 model Message {
   id             String        @id @default(uuid())
-  content        String        @db.VarChar(255) 
+  content        String        @db.VarChar(255)
   createdAt      DateTime      @default(now())
 
   sender         User          @relation("MessagesSent", fields: [senderId], references: [id])
   senderId       String
 
-  receiverId     String
-  receiver       User           @relation("MessagesReceived", fields: [receiverId], references: [id])
-
   conversation   Conversation  @relation(fields: [conversationId], references: [id])
   conversationId String
+
   statuses       MessageStatus[]
 
   @@index([conversationId])
   @@index([senderId])
-  @@index([receiverId])
-
 }
+
 
 model Conversation {
   id           String        @id @default(uuid())
