@@ -50,6 +50,43 @@ exports.conversationCreate = async (req, res) => {
   }
 };
 
+exports.conversationGet = async (req, res) => {
+  const conversationId = req.params.id;
+  const userId = req.params.userId;
+
+  try {
+    // const conversation = await prisma.conversation.findUnique({
+    //   where: { id: conversationId },
+    //   include: {
+    //     participants: true,
+    //     messages: {
+    //       include: {
+    //         sender: true,
+    //       },
+    //       orderBy: { createdAt: "asc" },
+    //     },
+    //   },
+    // });
+
+    // if (!conversation) {
+    //   return res.status(404).send("Conversation not found");
+    // }
+
+    // AFTER AUTH, get senderId from req!!!
+
+    const messages = await prisma.message.findMany({
+      where: { conversationId },
+      include: { sender: true },
+      orderBy: { createdAt: "asc" },
+    });
+
+    res.render("chat", { conversationId, senderId: userId, messages });
+  } catch (err) {
+    console.error("Error fetching conversation:", err);
+    res.status(500).send("Internal server error");
+  }
+};
+
 // finds if a conversation already exists
 async function findExistingConversation(userIds, isGroup, title) {
   // get all conversations with only the mentioned users in them and with the same title

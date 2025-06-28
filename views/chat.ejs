@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script defer src="/js/chat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white h-screen flex flex-col">
+    <!-- Hidden inputs for socket usage -->
+    <input type="hidden" id="conversationId" value="<%= conversationId %>" />
+    <input type="hidden" id="senderId" value="<%= senderId %>" />
+    <!-- Chat Messages -->
+    <main id="messagesList" class="flex-1 overflow-y-auto px-6 py-4 space-y-3 bg-gray-900">
+      <% messages.forEach(msg => { if (msg.sender.id === senderId) { %>
+      <!-- Sender's message -->
+      <div class="flex justify-end">
+        <div class="bg-blue-600 text-white px-4 py-2 rounded-lg max-w-xs">
+          <div class="text-sm text-right text-gray-200 font-semibold mb-1"><%= msg.sender.username %></div>
+          <div><%= msg.content %></div>
+        </div>
+      </div>
+      <% } else { %>
+      <!-- Other user's message -->
+      <div class="flex justify-start">
+        <div class="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-xs">
+          <div class="text-sm text-blue-300 font-semibold mb-1"><%= msg.sender.username %></div>
+          <div><%= msg.content %></div>
+        </div>
+      </div>
+      <% } %> <% }) %>
+    </main>
+
+    <!-- Message Input -->
+    <footer class="bg-gray-800 p-4">
+      <div class="flex">
+        <input
+          id="messageInput"
+          type="text"
+          placeholder="Type a message..."
+          class="flex-1 px-4 py-2 rounded-l bg-gray-700 text-white border border-gray-600 focus:outline-none"
+        />
+        <button id="sendButton" class="bg-blue-500 px-6 py-2 rounded-r text-white font-semibold hover:bg-blue-600">Send</button>
+      </div>
+    </footer>
+  </body>
+</html>

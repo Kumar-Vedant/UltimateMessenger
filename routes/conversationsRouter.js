@@ -4,5 +4,6 @@ const conversationsRouter = Router();
 
 conversationsRouter.get("/", conversationsController.conversationsListGet);
 conversationsRouter.post("/", conversationsController.conversationCreate);
+conversationsRouter.get("/:id/:userId", conversationsController.conversationGet);
 
 module.exports = conversationsRouter;
