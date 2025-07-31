@@ -12,16 +12,16 @@ A full-stack real-time messaging web app using Node.js with Express for backend,
 ## Demo
 
 <p align="center">
-  <img src="demo/Main.png" width="300"/>
+  <img src="demo/Main.png"/>
 </p>
 <p align="center">
-  <img src="demo/Login.png" width="300"/>
+  <img src="demo/Login.png"/>
 </p>
 <p align="center">
-  <img src="demo/Register.png" width="300"/>
+  <img src="demo/Register.png"/>
 </p>
 <p align="center">
-  <img src="demo/Message.png" width="300"/>
+  <img src="demo/Message.png"/>
 </p>
 
 ## Usage
