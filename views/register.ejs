@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+      <!-- Logo + App Name -->
+      <div class="flex flex-col items-center mb-6">
+        <!-- Replace with <img src="/path/to/logo.png" alt="Logo" class="w-16 h-16 mb-2"> -->
+        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-2xl font-bold">
+          <img src="/images/logo.png" alt="App Logo" class="w-16 h-16 rounded-full" />
+        </div>
+        <h1 class="text-3xl font-bold text-white mt-2">Ultimate Messenger</h1>
+      </div>
+
+      <h2 class="text-xl font-semibold mb-4 text-center text-white">Create a new account</h2>
+
+      <form action="/register" method="POST" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm text-gray-300">Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+            class="w-full mt-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="email" class="block text-sm text-gray-300">Email</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            required
+            class="w-full mt-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="password" class="block text-sm text-gray-300">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            required
+            class="w-full mt-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition">Sign Up</button>
+      </form>
+
+      <p class="mt-4 text-center text-gray-400 text-sm">
+        Already have an account?
+        <a href="/auth/login" class="text-blue-400 hover:underline">Login</a>
+      </p>
+    </div>
+  </body>
+</html>

@@ -1,12 +1,11 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
+// GET all conversations (for debugging/admin use)
 exports.conversationsListGet = async (req, res) => {
   try {
     const conversations = await prisma.conversation.findMany({
-      include: {
-        participants: true,
-      },
+      include: { participants: true },
     });
     res.status(200).send(conversations);
   } catch (err) {
@@ -15,65 +14,39 @@ exports.conversationsListGet = async (req, res) => {
   }
 };
 
+// JSON API to create or get conversation (used for AJAX)
 exports.conversationCreate = async (req, res) => {
   const { userIds, isGroup, title } = req.body;
 
   try {
-    // check if conversation already exists
-    const existing = await findExistingConversation(userIds, isGroup, title);
-
-    // if yes, return the existing one
-    if (existing) {
-      return res.status(200).json({ conversation: existing, existing: true });
-    }
-
-    // else, create a new conversation
-    const conversation = await prisma.conversation.create({
-      data: {
-        isGroup: isGroup || false,
-        title: title || null,
-        participants: {
-          create: userIds.map((id) => ({
-            userId: id,
-          })),
-        },
-      },
-      include: {
-        participants: true,
-      },
-    });
-
-    res.status(201).json(conversation);
+    const conversation = await getOrCreateConversation(userIds, isGroup, title);
+    res.status(201).json({ conversation });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not create conversation" });
   }
 };
 
+// FORM-based version of starting a conversation (redirects to chat view)
+exports.conversationStart = async (req, res) => {
+  const senderId = req.body.senderId;
+  const receiverId = req.body.receiverId;
+
+  try {
+    const conversation = await getOrCreateConversation([senderId, receiverId]);
+    res.redirect(`/conversations/${conversation.id}/${senderId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to start conversation");
+  }
+};
+
+// Renders chat UI with previous messages
 exports.conversationGet = async (req, res) => {
   const conversationId = req.params.id;
   const userId = req.params.userId;
 
   try {
-    // const conversation = await prisma.conversation.findUnique({
-    //   where: { id: conversationId },
-    //   include: {
-    //     participants: true,
-    //     messages: {
-    //       include: {
-    //         sender: true,
-    //       },
-    //       orderBy: { createdAt: "asc" },
-    //     },
-    //   },
-    // });
-
-    // if (!conversation) {
-    //   return res.status(404).send("Conversation not found");
-    // }
-
-    // AFTER AUTH, get senderId from req!!!
-
     const messages = await prisma.message.findMany({
       where: { conversationId },
       include: { sender: true },
@@ -87,11 +60,31 @@ exports.conversationGet = async (req, res) => {
   }
 };
 
-// finds if a conversation already exists
+// Shared logic to find or create a conversation
+async function getOrCreateConversation(userIds, isGroup = false, title = null) {
+  const existing = await findExistingConversation(userIds, isGroup, title);
+  if (existing) return existing;
+
+  return await prisma.conversation.create({
+    data: {
+      isGroup,
+      title,
+      participants: {
+        create: userIds.map((id) => ({ userId: id })),
+      },
+    },
+    include: {
+      participants: true,
+    },
+  });
+}
+
+// Helper to check for existing conversation
 async function findExistingConversation(userIds, isGroup, title) {
-  // get all conversations with only the mentioned users in them and with the same title
   const conversations = await prisma.conversation.findMany({
     where: {
+      isGroup: isGroup || false,
+      title: title,
       participants: {
         every: {
           userId: {
@@ -99,14 +92,11 @@ async function findExistingConversation(userIds, isGroup, title) {
           },
         },
       },
-      isGroup: isGroup || false,
-      title: title,
     },
     include: {
       participants: true,
     },
   });
 
-  // return the one with the same no. of users
   return conversations.find((conv) => conv.participants.length === userIds.length && conv.participants.every((p) => userIds.includes(p.userId)));
 }

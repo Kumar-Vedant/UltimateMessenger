@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ultimate Messenger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 shadow-lg p-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <!-- Logo -->
+        <img src="/images/logo.png" alt="Logo" class="w-10 h-10 rounded-full" />
+        <span class="text-xl font-bold text-white">Ultimate Messenger</span>
+      </div>
+      <!-- Future top-right items (profile/settings) -->
+    </nav>
+
+    <!-- Main layout -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar (User List) -->
+      <aside class="w-64 bg-gray-850 border-r border-gray-700 p-4 overflow-y-auto">
+        <h2 class="text-lg font-semibold mb-4 text-blue-400">Chats</h2>
+        <div class="space-y-3">
+          <% users.forEach(user => { %>
+          <form action="/conversations/start" method="POST">
+            <input type="hidden" name="receiverId" value="<%= user.id %>" />
+            <input type="hidden" name="senderId" value="41db83f7-05b2-4030-b827-25940a5bc20b" />
+            <button type="submit" class="w-full bg-gray-700 hover:bg-blue-600 transition px-4 py-2 rounded-lg text-left font-medium text-white">
+              <%= user.username %>
+            </button>
+          </form>
+          <% }) %>
+        </div>
+      </aside>
+
+      <!-- Main content area -->
+      <main class="flex-1 p-6 overflow-y-auto flex items-center justify-center text-gray-400">
+        <div class="text-center">
+          <h2 class="text-2xl font-semibold mb-2">Welcome to Ultimate Messenger</h2>
+          <p>Select a user from the sidebar to start chatting.</p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
